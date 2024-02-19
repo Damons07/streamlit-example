@@ -14,6 +14,7 @@ forums](https://discuss.streamlit.io).
 
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
+st.write("Holi pewitas")
 st.header('_Hola, bienvenidos, esta es mi primera APP de Streamlit_ is :blue[cool] :sunglasses:')
 
 with st.echo(code_location='below'):
