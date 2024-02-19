@@ -1,39 +1,47 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
 import streamlit as st
+import pandas as pd
+from pymongo import MongoClient
 
-"""
-# Welcome to Streamlit!
+# Conectar a la base de datos MongoDB
+client = MongoClient('mongodb+srv://damons07:mNcsCwuuA8vYuxB9@prediccion2024.htxnzwm.mongodb.net/')
+db = client.sample_geospatial
+collection = db.shipwrecks
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
+# Obtener datos de la colección
+data = pd.DataFrame(list(collection.find()))
 
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+# Cambiar los nombres de las columnas al español
+nombres_columnas_espanol = {
+    'Feature Type': 'Tipo de Característica',
+    'Chart': 'Carta',
+    'Latitude': 'Latitud',
+    'Longitude': 'Longitud',
+    'Gazetteer': 'Gazetteer',
+    'Depth': 'Profundidad',
+    'History': 'Historia',
+    'Description': 'Descripción',
+    'Accession No.': 'Número de Acceso',
+    'Catalog No.': 'Número de Catálogo',
+    'Object Name': 'Nombre del Objeto',
+    'Vessel Name': 'Nombre del Buque',
+    'Event': 'Evento',
+    'Year Built': 'Año de Construcción',
+    'Year Sunk': 'Año Hundido',
+    'Reason Sunk': 'Razón del Hundimiento',
+    'Coordinates': 'Coordenadas',
+    'Legal Status': 'Estado Legal',
+    'Date': 'Fecha',
+    'Remarks': 'Observaciones'
+}
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
-st.write("Holi pewitas")
-st.header('_Hola, bienvenidos, esta es mi primera APP de Streamlit_ is :blue[cool] :sunglasses:')
+data.rename(columns=nombres_columnas_espanol, inplace=True)
 
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
+# Mostrar dataframe antes de la limpieza
+st.write("Dataframe antes de la limpieza:")
+st.write(data)
 
-    Point = namedtuple('Point', 'x y')
-    data = []
+# Proceso de limpieza de datos
 
-    points_per_turn = total_points / num_turns
-
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
-
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+# Mostrar dataframe después de la limpieza
+st.write("Dataframe después de la limpieza:")
+st.write(data)
